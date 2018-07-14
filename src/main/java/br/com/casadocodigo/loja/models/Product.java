@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,5 +35,9 @@ public class Product {
     private List<Price> prices = new ArrayList<>();
     @DateTimeFormat
     private Calendar releaseDate;
+    private String summaryPath;
 
+    public BigDecimal priceFor(BookType bookType) {
+        return prices.stream().filter(price -> price.getBookType().equals(bookType)).findFirst().get().getValue();
+    }
 }

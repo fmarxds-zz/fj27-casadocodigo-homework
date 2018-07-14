@@ -15,6 +15,7 @@
 <body>
     <h2>Listagem de Livros</h2>
     <p>${livro_cadastrado_sucesso}</p>
+    <h4>Items no carrinho: ${shoppingCart.quantity}</h4>
     <table>
         <thead>
             <tr>
@@ -23,6 +24,7 @@
                 <th>DESCRIÇÃO</th>
                 <th>PÁGINAS</th>
                 <th>LANÇAMENTO</th>
+                <th>SUMÁRIO</th>
                 <th>VALORES</th>
             </tr>
         </thead>
@@ -30,10 +32,15 @@
             <c:forEach items="${products}" var="livro">
                 <tr>
                     <td>${livro.id}</td>
-                    <td>${livro.title}</td>
+                    <td>
+                        <c:url value="/products/${livro.id}" var="linkDetalhar"/>
+                        <a href="${linkDetalhar}">${livro.title}</a>
+
+                    </td>
                     <td>${livro.description}</td>
                     <td>${livro.numberOfPages}</td>
                     <td><fmt:formatDate value="${livro.releaseDate.time}" pattern="dd/MM/yyyy"/></td>
+                    <td><a href="${livro.summaryPath}"/>Acessar</td>
                     <td>
                         <c:forEach items="${livro.prices}" var="preco">
                             <br>${preco.bookType}: ${preco.value}

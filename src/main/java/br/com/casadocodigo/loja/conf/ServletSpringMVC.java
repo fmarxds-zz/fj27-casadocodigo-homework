@@ -2,6 +2,9 @@ package br.com.casadocodigo.loja.conf;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletRegistration;
+
 /** Classe que configura a Servlet do SpringMVC */
 
 public class ServletSpringMVC extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -23,4 +26,9 @@ public class ServletSpringMVC extends AbstractAnnotationConfigDispatcherServletI
         return new String[]{"/"};
     }
 
+    // Habilita o upload de arquivos na Servlet
+    @Override
+    protected void customizeRegistration(ServletRegistration.Dynamic registration) {
+        registration.setMultipartConfig(new MultipartConfigElement(""));
+    }
 }

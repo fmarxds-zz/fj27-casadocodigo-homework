@@ -2,6 +2,8 @@ package br.com.casadocodigo.loja.conf;
 
 import br.com.casadocodigo.loja.controllers.HomeController;
 import br.com.casadocodigo.loja.daos.ProductDAO;
+import br.com.casadocodigo.loja.infra.FileSaver;
+import br.com.casadocodigo.loja.models.ShoppingCart;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +12,8 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -18,7 +22,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  */
 
 @EnableWebMvc
-@ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class})
+@ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class, FileSaver.class, ShoppingCart.class})
 public class AppWebConfiguration {
 
     // Configura os diretórios padrões da view
@@ -29,6 +33,9 @@ public class AppWebConfiguration {
 
         resolver.setPrefix("/WEB-INF/views/");
         resolver.setSuffix(".jsp");
+
+        // Habilita o uso da classe ShoppingCart globalmente pela JSP
+        resolver.setExposedContextBeanNames("shoppingCart");
 
         return resolver;
     }
@@ -53,6 +60,12 @@ public class AppWebConfiguration {
         registrar.registerFormatters(conversionService);
 
         return conversionService;
+    }
+
+    // Habilita o upload de arquivos
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 
 }
