@@ -12,9 +12,14 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
@@ -23,7 +28,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @EnableWebMvc
 @ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class, FileSaver.class, ShoppingCart.class})
-public class AppWebConfiguration {
+public class AppWebConfiguration extends WebMvcConfigurerAdapter {
+// Apenas está sendo realizada a extensão da classe WebMvcConfigureAdapter para que sejam habilitados os recursos estáticos no método 'configureDefaultServoetHandling'
 
     // Configura os diretórios padrões da view
     @Bean
@@ -40,6 +46,22 @@ public class AppWebConfiguration {
         return resolver;
     }
 
+    // Habilitam o uso de arquivos estáticos (CSS, JS, etc.)
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/","/other-resources/")
+                .setCachePeriod(3600)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+    }
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+        configurer.enable();
+    }
+    //--FIM--
+
     // Configura o arquivo de mensagens padrão do Spring
     @Bean
     public MessageSource messageSource() {
@@ -49,8 +71,8 @@ public class AppWebConfiguration {
         messageSource.setCacheSeconds(1);
         return messageSource;
     }
-
     // Configura o serviço de conversão de data
+
     @Bean
     public FormattingConversionService mvcConversionService() {
         DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService(true);
@@ -61,11 +83,16 @@ public class AppWebConfiguration {
 
         return conversionService;
     }
-
     // Habilita o upload de arquivos
+
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
+    // Habilita a injecao do Rest Template
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
