@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
     <title>Livros Cadastrados</title>
@@ -21,6 +22,7 @@
                 <th>TÍTULO</th>
                 <th>DESCRIÇÃO</th>
                 <th>PÁGINAS</th>
+                <th>LANÇAMENTO</th>
                 <th>VALORES</th>
             </tr>
         </thead>
@@ -31,6 +33,7 @@
                     <td>${livro.title}</td>
                     <td>${livro.description}</td>
                     <td>${livro.numberOfPages}</td>
+                    <td><fmt:formatDate value="${livro.releaseDate.time}" pattern="dd/MM/yyyy"/></td>
                     <td>
                         <c:forEach items="${livro.prices}" var="preco">
                             <br>${preco.bookType}: ${preco.value}
