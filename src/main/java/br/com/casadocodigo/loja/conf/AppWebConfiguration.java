@@ -4,6 +4,11 @@ import br.com.casadocodigo.loja.controllers.HomeController;
 import br.com.casadocodigo.loja.daos.ProductDAO;
 import br.com.casadocodigo.loja.infra.FileSaver;
 import br.com.casadocodigo.loja.models.ShoppingCart;
+import com.google.common.cache.CacheBuilder;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,11 +27,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Classe utilizada para configurar a aplicação web
  */
 
 @EnableWebMvc
+@EnableCaching // Habilita o uso de Cache
 @ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class, FileSaver.class, ShoppingCart.class})
 public class AppWebConfiguration extends WebMvcConfigurerAdapter {
 // Apenas está sendo realizada a extensão da classe WebMvcConfigureAdapter para que sejam habilitados os recursos estáticos no método 'configureDefaultServoetHandling'
@@ -71,8 +79,8 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
         messageSource.setCacheSeconds(1);
         return messageSource;
     }
-    // Configura o serviço de conversão de data
 
+    // Configura o serviço de conversão de data
     @Bean
     public FormattingConversionService mvcConversionService() {
         DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService(true);
@@ -83,16 +91,29 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
 
         return conversionService;
     }
-    // Habilita o upload de arquivos
 
+    // Habilita o upload de arquivos
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-    // Habilita a injecao do Rest Template
 
+    // Habilita a injecao do Rest Template
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    // Habilita o uso de cache com a API GuavaCacheManager da Google
+    @Bean
+    public CacheManager cacheManager() {
+        CacheBuilder<Object, Object> builder =
+            CacheBuilder
+                .newBuilder()
+                .maximumSize(100)
+                .expireAfterAccess(5, TimeUnit.MINUTES);
+        GuavaCacheManager cacheManager = new GuavaCacheManager();
+        cacheManager.setCacheBuilder(builder);
+        return cacheManager;
     }
 }

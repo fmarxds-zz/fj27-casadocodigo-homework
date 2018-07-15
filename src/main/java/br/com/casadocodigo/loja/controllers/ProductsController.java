@@ -5,6 +5,8 @@ import br.com.casadocodigo.loja.infra.FileSaver;
 import br.com.casadocodigo.loja.models.BookType;
 import br.com.casadocodigo.loja.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +42,7 @@ public class ProductsController {
         return view;
     }
 
+    @Cacheable(value = "lastProducts")
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView list() {
         ModelAndView view = new ModelAndView("products/list");
@@ -47,6 +50,7 @@ public class ProductsController {
         return view;
     }
 
+    @CacheEvict(value = "lastProducts", allEntries = true)
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView save(MultipartFile summary, @Valid Product livro, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
