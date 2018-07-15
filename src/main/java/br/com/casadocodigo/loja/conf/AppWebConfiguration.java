@@ -4,6 +4,7 @@ import br.com.casadocodigo.loja.controllers.HomeController;
 import br.com.casadocodigo.loja.daos.ProductDAO;
 import br.com.casadocodigo.loja.infra.FileSaver;
 import br.com.casadocodigo.loja.models.ShoppingCart;
+import br.com.casadocodigo.loja.viewresolvers.JsonViewResolver;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -17,16 +18,21 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -115,5 +121,21 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
         GuavaCacheManager cacheManager = new GuavaCacheManager();
         cacheManager.setCacheBuilder(builder);
         return cacheManager;
+    }
+
+    // Habilita o uso de retornos tipo JSON ou XML
+    @Bean
+    public ViewResolver contentNegotiationViewResolver(ContentNegotiationManager negotiationManager){
+        List<ViewResolver> resolvers = new ArrayList<>();
+
+        resolvers.add(internalResourceViewResolver());
+        resolvers.add(new JsonViewResolver());
+
+        ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
+
+        resolver.setViewResolvers(resolvers);
+        resolver.setContentNegotiationManager(negotiationManager);
+
+        return resolver;
     }
 }
