@@ -8,7 +8,6 @@ import br.com.casadocodigo.loja.viewresolvers.JsonViewResolver;
 import com.google.common.cache.CacheBuilder;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -22,11 +21,11 @@ import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -65,11 +64,12 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/resources/**")
-                .addResourceLocations("/resources/","/other-resources/")
+                .addResourceLocations("/resources/", "/other-resources/")
                 .setCachePeriod(3600)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
+
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
@@ -114,10 +114,10 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public CacheManager cacheManager() {
         CacheBuilder<Object, Object> builder =
-            CacheBuilder
-                .newBuilder()
-                .maximumSize(100)
-                .expireAfterAccess(5, TimeUnit.MINUTES);
+                CacheBuilder
+                        .newBuilder()
+                        .maximumSize(100)
+                        .expireAfterAccess(5, TimeUnit.MINUTES);
         GuavaCacheManager cacheManager = new GuavaCacheManager();
         cacheManager.setCacheBuilder(builder);
         return cacheManager;
@@ -125,7 +125,7 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
 
     // Habilita o uso de retornos tipo JSON ou XML
     @Bean
-    public ViewResolver contentNegotiationViewResolver(ContentNegotiationManager negotiationManager){
+    public ViewResolver contentNegotiationViewResolver(ContentNegotiationManager negotiationManager) {
         List<ViewResolver> resolvers = new ArrayList<>();
 
         resolvers.add(internalResourceViewResolver());
@@ -137,5 +137,17 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
         resolver.setContentNegotiationManager(negotiationManager);
 
         return resolver;
+    }
+
+    // Adiciona um interceptador de requisições para mudança de língua na página
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LocaleChangeInterceptor());
+    }
+
+    // Configura o modo como o Spring vai armazenar a localidade escolhida pelo usuário (no caso, em cookies)
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new CookieLocaleResolver();
     }
 }

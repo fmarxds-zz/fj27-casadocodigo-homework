@@ -10,6 +10,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <cdc:page title="Casa do Código">
     <h2>Listagem de Livros</h2>
     <p>${livro_cadastrado_sucesso}</p>
@@ -17,7 +18,7 @@
     <sec:authorize access="isAuthenticated()">
         <sec:authentication property="principal" var="user"/>
         <div>
-            <p>Olá ${user.name}</p>
+            <p><spring:message code="users.welcome" arguments="${user.name}"/></p>
         </div>
     </sec:authorize>
     <sec:authorize access="hasRole('ROLE_ADMIN')">
