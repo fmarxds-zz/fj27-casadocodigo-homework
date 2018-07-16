@@ -1,8 +1,11 @@
 package br.com.casadocodigo.loja.conf;
 
+import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 /** Classe que configura a Servlet do SpringMVC */
@@ -31,5 +34,13 @@ public class ServletSpringMVC extends AbstractAnnotationConfigDispatcherServletI
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         registration.setMultipartConfig(new MultipartConfigElement(""));
+    }
+
+    // Configura o perfil que será usado pela aplicação
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        super.onStartup(servletContext);
+        servletContext.addListener(RequestContextListener.class);
+        servletContext.setInitParameter("spring.profiles.active", "prod");
     }
 }

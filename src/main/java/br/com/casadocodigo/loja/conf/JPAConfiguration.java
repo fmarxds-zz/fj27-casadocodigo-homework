@@ -1,6 +1,7 @@
 package br.com.casadocodigo.loja.conf;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -36,6 +37,7 @@ public class JPAConfiguration {
 
     // O DataSource é quem cria a conexão com o Banco de Dados via JDBC
     @Bean
+    @Profile("prod") // Devido ao fato de exisitr um dataSource com o perfil de teste, este foi anotado com 'prod'
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
