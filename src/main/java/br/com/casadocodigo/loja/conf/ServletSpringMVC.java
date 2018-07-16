@@ -9,15 +9,16 @@ import javax.servlet.ServletRegistration;
 
 public class ServletSpringMVC extends AbstractAnnotationConfigDispatcherServletInitializer {
 
+    // Informa ao Spring quais classes de configuração devem ser carregadas ao iniciar a Aplicação (Passo 1)
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return null;
+        return new Class[]{SecurityConfiguration.class, AppWebConfiguration.class, JPAConfiguration.class};
     }
 
-    // Informa ao Spring onde estão as classes de configuração da aplicação
+    // Informa ao Spring quais classes de configuração devem ser carregadas ao iniciar a Servlet (Passo 2). Caso esteja utilizando o Spring Security, as classes são carregadas no início da aplicação.
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{AppWebConfiguration.class, JPAConfiguration.class};
+        return new Class[]{};
     }
 
     // Configura quais URIs a servlet do Spring vai mapear da aplicação (no caso, com "/" ela mapeia a aplicação toda)
