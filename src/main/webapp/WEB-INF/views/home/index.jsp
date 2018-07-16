@@ -6,11 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Casa do Código</title>
-</head>
-<body>
+<%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<cdc:page title="Casa do Código">
     <h4>Casa do Código</h4>
-</body>
-</html>
+</cdc:page>

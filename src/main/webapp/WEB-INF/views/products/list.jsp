@@ -9,11 +9,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<html>
-<head>
-    <title>Livros Cadastrados</title>
-</head>
-<body>
+<%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<cdc:page title="Casa do Código">
     <h2>Listagem de Livros</h2>
     <p>${livro_cadastrado_sucesso}</p>
     <h4>Items no carrinho: ${shoppingCart.quantity}</h4>
@@ -61,5 +58,4 @@
             </c:forEach>
         </tbody>
     </table>
-</body>
-</html>
+</cdc:page>

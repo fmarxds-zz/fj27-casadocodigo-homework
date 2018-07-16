@@ -6,11 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Cadastro de Livros</title>
-</head>
-<body>
+<%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<cdc:page title="ok">
     <h6>Livro salvo com sucesso!</h6>
-</body>
-</html>
+</cdc:page>

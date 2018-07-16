@@ -9,11 +9,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<html>
-<head>
-    <title>Cadastro de Livros</title>
-</head>
-<body>
+<%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<cdc:page title="Cadastro de Livros">
     <c:url value="/products" var="url" />
     <form:form action="${spring:mvcUrl('PC#save').build()}" method="post" commandName="product" enctype="multipart/form-data">
         <div>
@@ -53,5 +50,4 @@
             <button type="submit">Enviar</button>
         </div>
     </form:form>
-</body>
-</html>
+</cdc:page>

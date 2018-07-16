@@ -4,8 +4,4 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
 
 /** Classe que configura o Filtro do Spring Security */
 
-public class SpringSecurityFilterConfiguration extends AbstractSecurityWebApplicationInitializer {
-
-
-
-}
+public class SpringSecurityFilterConfiguration extends AbstractSecurityWebApplicationInitializer {}

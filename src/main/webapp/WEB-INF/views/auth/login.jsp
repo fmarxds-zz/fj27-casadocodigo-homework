@@ -7,11 +7,8 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<html>
-<head>
-    <title>Casa do Código</title>
-</head>
-<body>
+<%@taglib prefix="cdc" tagdir="/WEB-INF/tags" %>
+<cdc:page title="Entrar">
     <h3>Efetue login</h3>
     <form:form servletRelativeAction="/login">
         <table>
@@ -30,5 +27,4 @@
             </tr>
         </table>
     </form:form>
-</body>
-</html>
+</cdc:page>
