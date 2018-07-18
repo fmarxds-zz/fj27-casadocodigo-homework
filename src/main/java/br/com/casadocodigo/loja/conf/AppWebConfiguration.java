@@ -3,6 +3,7 @@ package br.com.casadocodigo.loja.conf;
 import br.com.casadocodigo.loja.controllers.HomeController;
 import br.com.casadocodigo.loja.daos.ProductDAO;
 import br.com.casadocodigo.loja.infra.FileSaver;
+import br.com.casadocodigo.loja.mail.EmailSender;
 import br.com.casadocodigo.loja.models.ShoppingCart;
 import br.com.casadocodigo.loja.viewresolvers.JsonViewResolver;
 import com.google.common.cache.CacheBuilder;
@@ -17,6 +18,8 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.format.datetime.DateFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartResolver;
@@ -32,6 +35,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 @EnableWebMvc
 @EnableCaching // Habilita o uso de Cache
-@ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class, FileSaver.class, ShoppingCart.class})
+@ComponentScan(basePackageClasses = {HomeController.class, ProductDAO.class, FileSaver.class, ShoppingCart.class, EmailSender.class})
 public class AppWebConfiguration extends WebMvcConfigurerAdapter {
 // Apenas está sendo realizada a extensão da classe WebMvcConfigureAdapter para que sejam habilitados os recursos estáticos no método 'configureDefaultServoetHandling'
 
@@ -150,4 +154,23 @@ public class AppWebConfiguration extends WebMvcConfigurerAdapter {
     public LocaleResolver localeResolver() {
         return new CookieLocaleResolver();
     }
+
+    // Habilita o envio de emails com o Spring
+    @Bean
+    public MailSender mailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+        mailSender.setUsername("cursofj22@gmail.com");
+        mailSender.setPassword("Caelum123");
+
+        Properties mailProperties = new Properties();
+        mailProperties.put("mail.smtp.auth", true);
+        mailProperties.put("mail.smtp.starttls.enable", true);
+
+        mailSender.setJavaMailProperties(mailProperties);
+
+        return mailSender;
+    }
+
 }

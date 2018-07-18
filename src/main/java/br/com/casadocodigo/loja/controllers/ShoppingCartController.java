@@ -1,9 +1,11 @@
 package br.com.casadocodigo.loja.controllers;
 
 import br.com.casadocodigo.loja.daos.ProductDAO;
+import br.com.casadocodigo.loja.mail.EmailSender;
 import br.com.casadocodigo.loja.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +29,8 @@ public class ShoppingCartController {
     private ShoppingCart shoppingCart;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private EmailSender emailSender;
 
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView add(Integer productId, @RequestParam BookType bookType) {
@@ -47,7 +51,7 @@ public class ShoppingCartController {
     }
 
     @RequestMapping(value = "/checkout", method = RequestMethod.POST)
-    public Callable<String> checkout() {
+    public Callable<String> checkout(@AuthenticationPrincipal User user) {
         return () -> {
             BigDecimal total = shoppingCart.getTotal();
 
@@ -56,6 +60,7 @@ public class ShoppingCartController {
             try {
                 String response = restTemplate.postForObject(uriToPay, new PaymentData(total), String.class);
                 shoppingCart.esvazia();
+                emailSender.sendNewPurchaseMail(user);
                 System.out.println(response);
                 return "redirect:/products";
             } catch (HttpClientErrorException e) {
