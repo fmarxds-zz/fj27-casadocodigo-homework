@@ -37,7 +37,7 @@ public class JPAConfiguration {
 
     // O DataSource é quem cria a conexão com o Banco de Dados via JDBC
     @Bean
-    @Profile("prod") // Devido ao fato de exisitr um dataSource com o perfil de teste, este foi anotado com 'prod'
+    @Profile("dev") // Devido ao fato de exisitr um dataSource com o perfil de teste, este foi anotado com 'prod'
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
